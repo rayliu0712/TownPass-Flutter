@@ -191,7 +191,9 @@ extension MyServiceIdExt on MyServiceItemId {
       MyServiceItemId.sporta => MyServiceItem(
           title: 'Sporta',
           description: '我的 Sporta',
-          icon: Assets.svg.iconZoo24.svg(),
+          icon: Image.asset(
+            'assets/image/running.png',
+          ),
           category: MyServiceCategory.cityLife,
           destinationUrl: 'http://192.168.22.42:5173/sporta', // TODO
         )

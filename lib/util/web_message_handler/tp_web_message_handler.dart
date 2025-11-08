@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
@@ -273,8 +274,7 @@ class NotifyMessageHandler extends TPWebMessageHandler {
 
 class QRCodeScanMessageHandler extends TPWebMessageHandler {
   @override
-  // String get name => 'qr_code_scan';  // TODO
-  String get name => '_';
+  String get name => 'qr_code_scan';
 
   @override
   Future<void> handle({
@@ -292,11 +292,7 @@ class QRCodeScanMessageHandler extends TPWebMessageHandler {
 
 class SportaMessageHandler extends TPWebMessageHandler {
   @override
-  // String get name => 'sporta';  // TODO
-  String get name => 'qr_code_scan';
-
-  // must be static
-  // static int _i = 1;
+  String get name => 'sporta_notify'; // TODO
 
   @override
   Future<void> handle(
@@ -304,6 +300,8 @@ class SportaMessageHandler extends TPWebMessageHandler {
       required WebUri? sourceOrigin,
       required bool isMainFrame,
       required Function(WebMessage replyWebMessage)? onReply}) async {
+    log(message.toString());
+
     NotificationService.showNotification(
       title: "Sporta",
       content: "content",
