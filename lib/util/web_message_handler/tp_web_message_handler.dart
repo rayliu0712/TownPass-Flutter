@@ -273,7 +273,8 @@ class NotifyMessageHandler extends TPWebMessageHandler {
 
 class QRCodeScanMessageHandler extends TPWebMessageHandler {
   @override
-  String get name => 'qr_code_scan';
+  // String get name => 'qr_code_scan';
+  String get name => 'qr_code_test';
 
   @override
   Future<void> handle({
@@ -291,7 +292,8 @@ class QRCodeScanMessageHandler extends TPWebMessageHandler {
 
 class SportaMessageHandler extends TPWebMessageHandler {
   @override
-  String get name => 'sporta';
+  // String get name => 'sporta';
+  String get name => 'qr_code_scan';
 
   @override
   Future<void> handle(
@@ -300,6 +302,6 @@ class SportaMessageHandler extends TPWebMessageHandler {
       required bool isMainFrame,
       required Function(WebMessage replyWebMessage)? onReply}) async {
     NotificationService.showNotification(
-        title: "sporta", content: message.toString());
+        title: "Sporta", content: message.toString(), payload: "sporta");
   }
 }

@@ -30,7 +30,16 @@ class NotificationService extends GetxService {
     await _notificationInstance.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
-        log("ffjaadsf;lkj");
+        final payload = details.payload;
+
+        switch (payload) {
+          case "sporta":
+            log("from sporta");
+            break;
+
+          default:
+            break;
+        }
       },
     );
 
@@ -55,19 +64,20 @@ class NotificationService extends GetxService {
     }
   }
 
-  static Future<void> showNotification({String? title, String? content}) async {
+  static Future<void> showNotification(
+      {String? title, String? content, String? payload}) async {
     await _notificationInstance.show(
-      _id++,
-      title,
-      content,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'TownPass android notification id',
-          'TownPass android notification channel name',
-          importance: Importance.max,
-          priority: Priority.max,
+        _id++,
+        title,
+        content,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'TownPass android notification id',
+            'TownPass android notification channel name',
+            importance: Importance.max,
+            priority: Priority.max,
+          ),
         ),
-      ),
-    );
+        payload: payload);
   }
 }
