@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +7,12 @@ class NotificationService extends GetxService {
   static int _id = 0;
   static final FlutterLocalNotificationsPlugin _notificationInstance =
       FlutterLocalNotificationsPlugin();
+
+  static void Function()? _onCallback;
+
+  static void _onBackgroundCallback(NotificationResponse res) {
+    //
+  }
 
   Future<NotificationService> init() async {
     await _notificationInstance.getNotificationAppLaunchDetails();
@@ -30,17 +34,9 @@ class NotificationService extends GetxService {
     await _notificationInstance.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
-        final payload = details.payload;
-
-        switch (payload) {
-          case "sporta":
-            log("from sporta");
-            break;
-
-          default:
-            break;
-        }
+        _onCallback?.call();
       },
+      onDidReceiveBackgroundNotificationResponse: _onBackgroundCallback,
     );
 
     return this;
@@ -65,19 +61,20 @@ class NotificationService extends GetxService {
   }
 
   static Future<void> showNotification(
-      {String? title, String? content, String? payload}) async {
+      {String? title, String? content, void Function()? callback}) async {
+    _onCallback = callback;
     await _notificationInstance.show(
-        _id++,
-        title,
-        content,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'TownPass android notification id',
-            'TownPass android notification channel name',
-            importance: Importance.max,
-            priority: Priority.max,
-          ),
+      _id++,
+      title,
+      content,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'TownPass android notification id',
+          'TownPass android notification channel name',
+          importance: Importance.max,
+          priority: Priority.max,
         ),
-        payload: payload);
+      ),
+    );
   }
 }
