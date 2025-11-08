@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
@@ -106,11 +105,17 @@ class Agree1999MessageHandler extends TPWebMessageHandler {
       return;
     }
 
-    final bool userAgreement = SharedPreferencesService().instance.getBool(SharedPreferencesService.keyPhoneCallUserAgreement) ?? false;
+    final bool userAgreement = SharedPreferencesService()
+            .instance
+            .getBool(SharedPreferencesService.keyPhoneCallUserAgreement) ??
+        false;
     if (!userAgreement) {
       await Get.toNamed(TPRoute.phoneCallUserAgreement);
 
-      final bool userAgreement = SharedPreferencesService().instance.getBool(SharedPreferencesService.keyPhoneCallUserAgreement) ?? false;
+      final bool userAgreement = SharedPreferencesService()
+              .instance
+              .getBool(SharedPreferencesService.keyPhoneCallUserAgreement) ??
+          false;
       if (!userAgreement) {
         onReply?.call(replyWebMessage(data: false));
         return;
@@ -251,10 +256,12 @@ class NotifyMessageHandler extends TPWebMessageHandler {
         );
         final String content = json['content'];
         if (RegExp(r'已訂閱(.+)').hasMatch(content)) {
-          final String target = RegExp(r'已訂閱(.+)').firstMatch(content)!.group(1)!;
+          final String target =
+              RegExp(r'已訂閱(.+)').firstMatch(content)!.group(1)!;
           Get.find<SubscriptionService>().addSubscription(title: target);
         } else if (RegExp(r'已取消訂閱(.+)').hasMatch(content)) {
-          final String target = RegExp(r'已取消訂閱(.+)').firstMatch(content)!.group(1)!;
+          final String target =
+              RegExp(r'已取消訂閱(.+)').firstMatch(content)!.group(1)!;
           Get.find<SubscriptionService>().removeSubscription(title: target);
         }
       default:
@@ -279,5 +286,20 @@ class QRCodeScanMessageHandler extends TPWebMessageHandler {
     onReply?.call(
       replyWebMessage(data: result),
     );
+  }
+}
+
+class SportaMessageHandler extends TPWebMessageHandler {
+  @override
+  String get name => 'sporta';
+
+  @override
+  Future<void> handle(
+      {required Object? message,
+      required WebUri? sourceOrigin,
+      required bool isMainFrame,
+      required Function(WebMessage replyWebMessage)? onReply}) async {
+    NotificationService.showNotification(
+        title: "sporta", content: message.toString());
   }
 }
