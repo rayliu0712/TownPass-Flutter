@@ -11,6 +11,8 @@ import 'package:town_pass/service/shared_preferences_service.dart';
 import 'package:town_pass/service/subscription_service.dart';
 import 'package:town_pass/util/tp_colors.dart';
 import 'package:town_pass/util/tp_route.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 const _transparentStatusBar = SystemUiOverlayStyle(
   statusBarColor: Colors.transparent,
@@ -21,6 +23,9 @@ void main() async {
   // FlutterNativeSplash.preserve(
   //   widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
   // );
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Asia/Taipei'));
 
   await initServices();
 
@@ -33,9 +38,12 @@ Future<void> initServices() async {
   await Get.putAsync<AccountService>(() async => await AccountService().init());
   await Get.putAsync<DeviceService>(() async => await DeviceService().init());
   await Get.putAsync<PackageService>(() async => await PackageService().init());
-  await Get.putAsync<SharedPreferencesService>(() async => await SharedPreferencesService().init());
-  await Get.putAsync<GeoLocatorService>(() async => await GeoLocatorService().init());
-  await Get.putAsync<NotificationService>(() async => await NotificationService().init());
+  await Get.putAsync<SharedPreferencesService>(
+      () async => await SharedPreferencesService().init());
+  await Get.putAsync<GeoLocatorService>(
+      () async => await GeoLocatorService().init());
+  await Get.putAsync<NotificationService>(
+      () async => await NotificationService().init());
 
   Get.put<SubscriptionService>(SubscriptionService());
 }

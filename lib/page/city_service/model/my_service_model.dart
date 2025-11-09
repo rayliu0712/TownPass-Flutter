@@ -189,8 +189,8 @@ extension MyServiceIdExt on MyServiceItemId {
           destinationUrl: '',
         ),
       MyServiceItemId.sporta => MyServiceItem(
-          title: 'Sporta',
-          description: '我的 Sporta',
+          title: '揪來動',
+          description: '揪來動',
           icon: Image.asset(
             'assets/image/running.png',
           ),

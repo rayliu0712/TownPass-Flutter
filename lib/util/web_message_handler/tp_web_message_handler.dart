@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,6 +16,7 @@ import 'package:town_pass/util/tp_route.dart';
 import 'package:town_pass/util/tp_text.dart';
 import 'package:town_pass/util/web_message_handler/tp_web_message_reply.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 abstract class TPWebMessageHandler {
   String get name;
@@ -300,15 +300,15 @@ class SportaMessageHandler extends TPWebMessageHandler {
       required WebUri? sourceOrigin,
       required bool isMainFrame,
       required Function(WebMessage replyWebMessage)? onReply}) async {
-    log(message.toString());
+    final map = message as Map;
 
-    NotificationService.showNotification(
-      title: "Sporta",
-      content: "content",
-      callback: () {
-        // launchUrl(Uri.parse("tel://0123456789"));
-        // Get.back();
-      },
-    );
+    final scheduledDate =
+        tz.TZDateTime.from(DateTime.parse(map['eventTime']), tz.local);
+
+    NotificationService.zonedShowNotification(
+        title: '揪來動',
+        content: map['eventName'],
+        scheduledDate: scheduledDate,
+        callback: (details) {});
   }
 }

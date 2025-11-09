@@ -2,17 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService extends GetxService {
   static int _id = 0;
   static final FlutterLocalNotificationsPlugin _notificationInstance =
       FlutterLocalNotificationsPlugin();
 
-  static void Function()? _onCallback;
-
-  static void _onBackgroundCallback(NotificationResponse res) {
-    //
-  }
+  static void Function()? _callback1;
 
   Future<NotificationService> init() async {
     await _notificationInstance.getNotificationAppLaunchDetails();
@@ -34,9 +31,8 @@ class NotificationService extends GetxService {
     await _notificationInstance.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (details) {
-        _onCallback?.call();
+        _callback1?.call();
       },
-      onDidReceiveBackgroundNotificationResponse: _onBackgroundCallback,
     );
 
     return this;
@@ -44,10 +40,10 @@ class NotificationService extends GetxService {
 
   static Future<void> requestPermission() async {
     if (Platform.isAndroid) {
-      await _notificationInstance
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestNotificationsPermission();
+      await _notificationInstance.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+        ?..requestNotificationsPermission()
+        ..requestExactAlarmsPermission();
     } else if (Platform.isIOS) {
       await _notificationInstance
           .resolvePlatformSpecificImplementation<
@@ -62,7 +58,7 @@ class NotificationService extends GetxService {
 
   static Future<void> showNotification(
       {String? title, String? content, void Function()? callback}) async {
-    _onCallback = callback;
+    _callback1 = callback;
     await _notificationInstance.show(
       _id++,
       title,
@@ -75,6 +71,31 @@ class NotificationService extends GetxService {
           priority: Priority.max,
         ),
       ),
+    );
+  }
+
+  static Future<void> zonedShowNotification(
+      {String? title,
+      String? content,
+      required tz.TZDateTime scheduledDate,
+      void Function(NotificationResponse)? callback}) async {
+    await _notificationInstance.zonedSchedule(
+      _id++,
+      title,
+      content,
+      scheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'TownPass android notification id',
+          'TownPass android notification channel name',
+          importance: Importance.max,
+          priority: Priority.max,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: null,
     );
   }
 }
